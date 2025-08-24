@@ -1,0 +1,206 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    {% block title %}
+    <title>Home</title>
+    {% endblock %}
+</head>
+
+<body class="flex flex-col min-h-screen bg-gray-500">
+    <nav class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 shadow-lg fixed w-full z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <!-- Logo -->
+                <div class="flex-shrink-0 text-white text-2xl font-bold">
+                    MyBrand
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-6 text-white font-medium">
+                    <a href="{% url 'home' %}" class="hover:text-yellow-300 transition">Home</a>
+                    <a href="#" class="hover:text-yellow-300 transition">About</a>
+                    <a href="#" class="hover:text-yellow-300 transition">Services</a>
+                    <a href="#" class="hover:text-yellow-300 transition">Contact</a>
+                </div>
+
+                <!-- Desktop Button -->
+                <div class="hidden md:flex border gap-8">
+                    <a href="{% url 'createpost' %}"
+                        class="bg-white text-indigo-700 px-4 py-2 rounded-xl hover:bg-yellow-300 transition-all font-semibold">
+                        Create Post
+                    </a>
+                    <div class="flex gap-3 max-w-sm border">
+                        <a href="#"
+                            class="py-2.5 px-6 rounded-lg text-sm font-medium bg-teal-200 text-teal-800">Login</a>
+                        <a href="{% url 'signup' %}"
+                            class="py-2.5 px-6 rounded-lg text-sm font-medium text-white bg-teal-600">SignUp</a>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-toggle" class="text-white focus:outline-none text-2xl">
+                        ☰
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden px-4 pb-4 space-y-2 text-white font-medium">
+            <a href="{% url 'home' %}" class="block hover:text-yellow-300 transition">Home</a>
+            <a href="#" class="block hover:text-yellow-300 transition">About</a>
+            <a href="#" class="block hover:text-yellow-300 transition">Services</a>
+            <a href="#" class="block hover:text-yellow-300 transition">Contact</a>
+            <a href="{% url 'createpost' %}"
+                class="block bg-white text-indigo-700 text-center px-4 py-2 rounded-xl hover:bg-yellow-300 transition-all font-semibold mt-2">
+                Create Post
+            </a>
+            <div class="flex gap-3 max-w-sm">
+                <button class="py-2.5 px-6 rounded-lg text-sm font-medium bg-teal-200 text-teal-800">Cancel</button>
+                <button class="py-2.5 px-6 rounded-lg text-sm font-medium text-white bg-teal-600">Confirm</button>
+            </div>
+        </div>
+    </nav>
+    <div class="main flex-grow grid grid-cols-12 gap-6 p-4 mt-10">
+        {% block content %}
+
+        <div class="trending-container col-span-full h-auto w-full relative flex flex-col justify-center">
+            <h1 class="text-center font-bold text-3xl p-6 text-white">Trending Posts</h1>
+            <div
+                class="slider w-[79%] m-auto flex overflow-x-scroll scrollbar-hide gap-5 p-4 justify-center items-center">
+                {% for post in trending %}
+                <div
+                    class="card flex flex-col min-w-[275px] max-w-[275px] h-[300px] p-2 shadow-lg shadow-black bg-white">
+                    <img src="{{post.thumbnail.url}}" class="object-cover h-[60%]">
+                    <div class="card-content p-3">
+                        <h1 class="text-2xl font-bold break-words line-clamp-2 hover:text-blue-600"><a
+                                href="{% url 'detail' pk=post.id %}">{{post.title}}</a></h1>
+                        <div class="flex justify-around p-2">
+                            <span>{{post.author}}</span>
+                            <span>{{post.created_at}}</span>
+                        </div>
+
+                    </div>
+                </div>
+                {% endfor %}
+                <button
+                    class="prev_btn absolute size-[50px] left-0  rounded-full my-auto translate-x-[55px] md:translate-x-[130px] backdrop-blur-sm bg-white/30"
+                    onclick="prev()">Prev</button>
+                <button
+                    class="next_btn absolute size-[50px] right-0  rounded-full translate-x-[-55px] md:translate-x-[-130px] backdrop-blur-sm bg-white/30"
+                    onclick="next()">Next</button>
+            </div>
+        </div>
+        <div class="recent-container col-span-2 flex flex-col gap-3 p-2 bg-white">
+            <h1 class="text-center text-2xl font-bold p-2">Recent Posts</h1>
+            {% for post in recent %}
+            <div class="post flex gap-2 p-2 items-center border-t-[1px]">
+                <img src="{{post.thumbnail.url}}"
+                    class="w-[60px] h-[60px] overflow-auto object-center object-cover flex-shrink-0" alt="">
+                <h1 class="line-clamp-2 font-bold break-words hover:text-blue-600"><a
+                        href="{% url 'detail' pk=post.id %}">{{post.title}}</a></h1>
+            </div>
+            {% endfor %}
+
+        </div>
+        <div class="all-container col-span-10 p-4 flex flex-col gap-4 bg-white">
+            <h1 class="text-center text-2xl font-bold ">All Posts</h1>
+
+            <div class="category flex justify-center p-3 gap-3 bg-blue-600 w-[98%] mx-auto">
+                <a href="/" class="font-thin text-white text-xl bg-yellow-500 py-1 px-4 rounded-xl">All</a>
+                {% for category in categories %}
+                <a href="?category={{category.name|urlencode}}"
+                    class="font-thin text-white text-xl bg-yellow-500 py-1 px-2 rounded-xl">{{category.name}}</a>
+                {% endfor %}
+
+
+            </div>
+            <div class="grid grid-cols-4 place-items-center gap-4">
+
+                {% for post in posts %}
+                <div class="card flex flex-col min-w-[275px] max-w-[275px] h-[300px] p-2 shadow-lg shadow-black ">
+                    <img src="{{post.thumbnail.url}}" class="object-cover h-[60%]">
+                    <div class="card-content p-3">
+                        <h1 class="text-2xl font-bold break-words line-clamp-2 hover:text-blue-600"><a
+                                href="{% url 'detail' pk=post.id %}">{{post.title}}</a></h1>
+                        <div class="flex justify-around p-2">
+                            <span>{{post.author}}</span>
+                            <span>{{post.created_at}}</span>
+                        </div>
+
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+        {% endblock %}
+    </div>
+
+    <footer class="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 text-gray-300 py-10 w-full">
+        <div
+            class="container mx-auto px-6 md:px-12 lg:px-20 flex flex-col md:flex-row justify-between items-center md:items-start space-y-8 md:space-y-0">
+
+            <!-- Brand Info -->
+            <div class="text-center md:text-left w-full md:w-1/3 pr-10">
+                <h2 class="text-2xl font-bold text-white">BrandName</h2>
+                <p class="mt-2 text-gray-100">Creating stunning web experiences with modern design principles.</p>
+            </div>
+
+            <!-- Useful Links -->
+            <div class="w-full md:w-1/3 flex flex-col items-center md:items-start space-y-3">
+                <h3 class="text-lg font-semibold text-white">Quick Links</h3>
+                <a href="https://portfolio-ayyam.vercel.app/" class="hover:text-white transition duration-300">About
+                    Us</a>
+                <a href="https://portfolio-ayyam.vercel.app/"
+                    class="hover:text-white transition duration-300">Services</a>
+                <a href="https://portfolio-ayyam.vercel.app/"
+                    class="hover:text-white transition duration-300">Contact</a>
+                <a href="https://portfolio-ayyam.vercel.app/" class="hover:text-white transition duration-300">Privacy
+                    Policy</a>
+            </div>
+
+            <!-- Social Media -->
+            <div class="w-full md:w-1/3 flex justify-center md:justify-end space-x-4">
+                <a href="https://portfolio-ayyam.vercel.app/"
+                    class="text-gray-400 hover:text-white transition duration-300 transform hover:scale-110">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M22 12a10 10 0 10-11 9.95V14.9h-3v-3h3v-2.2c0-3 1.8-4.6 4.4-4.6 1.3 0 2.6.2 2.6.2v3h-1.5c-1.5 0-2 .9-2 1.8V12h3.4l-.5 3H15v7.05A10 10 0 0022 12z" />
+                    </svg>
+                </a>
+                <a href="https://portfolio-ayyam.vercel.app/"
+                    class="text-gray-400 hover:text-white transition duration-300 transform hover:scale-110">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M20.4 4.6c-.8.4-1.7.6-2.6.8.9-.6 1.6-1.4 1.9-2.5-.9.5-1.8.9-2.8 1.1-.8-.9-2-1.4-3.2-1.4-2.4 0-4.3 2-4.3 4.4 0 .3 0 .7.1 1C7.1 7.8 4.2 6.2 2.2 3.8c-.4.6-.6 1.4-.6 2.2 0 1.5.7 2.8 1.8 3.6-.7 0-1.4-.2-2-.5v.1c0 2.1 1.5 3.8 3.4 4.2-.4.1-.7.2-1.1.2-.3 0-.5 0-.8-.1.5 1.6 2 2.8 3.7 2.8-1.4 1.1-3.1 1.7-5 1.7-.3 0-.6 0-.8-.1 1.8 1.2 3.9 1.9 6.2 1.9 7.5 0 11.7-6.3 11.7-11.7v-.5c.8-.6 1.5-1.3 2.1-2.2z" />
+                    </svg>
+                </a>
+                <a href="https://portfolio-ayyam.vercel.app/"
+                    class="text-gray-400 hover:text-white transition duration-300 transform hover:scale-110">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2.2c-5.4 0-9.8 4.4-9.8 9.8 0 4.9 3.6 8.9 8.3 9.7V14.9H7.9V12h2.6V9.8c0-2.6 1.6-4 3.9-4 1.1 0 2 .1 2.3.1v2.7h-1.6c-1.3 0-1.6.6-1.6 1.5V12h3.2l-.5 2.9H13v6.8c4.7-.8 8.3-4.8 8.3-9.7 0-5.4-4.4-9.8-9.8-9.8z" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="text-center text-gray-100 text-sm mt-8">
+            &copy; 2024 BrandName. All rights reserved.
+        </div>
+    </footer>
+    <script src="{% static '/js/home.js' %}"></script>
+</body>
+
+</html>
