@@ -104,14 +104,13 @@ WSGI_APPLICATION = "myproject.wsgi.application"
 #         "NAME": BASE_DIR / "db.sqlite3",
 #     }
 # }
+BASE_DIR = Path(__file__).resolve().parent.parent
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),  # Absolute path Windows compatible
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-
 
 
 # Password validation
