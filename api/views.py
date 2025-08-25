@@ -41,19 +41,24 @@ class PostViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+    def perform_update(self, serializer):
+        post = self.get_object()
+        if post.author != self.request.user:
+            raise permissions.PermissionDenied("You can't update this post.")
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        if instance.author != self.request.user:
+            raise permissions.PermissionDenied("You can't delete this post.")
+        instance.delete()
     
     def retrieve(self, request,*args,**kwargs):
         post=self.get_object()
         Post.objects.filter(id=post.id).update(views=F('views')+1)
         serializer=self.get_serializer(post)
         return Response(serializer.data)
-    # def get_queryset(self):
-    #     user=self.request.user
-    #     if user.is_anonymous:
-    #         return Post.objects.none()
-    #     return Post.objects.filter(author=self.request.user)
-    
-    
+
     @action(detail=False,methods=['get'])
     def recent(self,request):
         
