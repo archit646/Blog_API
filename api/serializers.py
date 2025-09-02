@@ -19,7 +19,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model=User
-        fields=['username']
+        fields=['id','username']
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
