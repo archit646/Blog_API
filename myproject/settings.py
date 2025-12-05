@@ -17,7 +17,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-=rl@2!*i^_-kbqf^k7t)si-*yj11s3$cykhiya$++n=_6_3(z4"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -139,7 +139,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 CORS_ALLOW_ALL_ORIGINS = True
 
 # Default primary key field type
@@ -150,13 +150,15 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 LOGIN_URL = reverse_lazy('login')
 
 import os
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 from datetime import timedelta
 
