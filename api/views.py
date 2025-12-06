@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from blog.models import *
+from api.models import *
 from .serializers import *
 from rest_framework.decorators import action
 from rest_framework.response import Response
