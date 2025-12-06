@@ -20,6 +20,10 @@ SECRET_KEY = "django-insecure-=rl@2!*i^_-kbqf^k7t)si-*yj11s3$cykhiya$++n=_6_3(z4
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = [
+    'https://myapp002.pythonanywhere.com'
+]
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
